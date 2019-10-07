@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-top',
@@ -7,11 +8,14 @@ import { Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleCha
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TopComponent implements OnInit, OnChanges {
-  @Input() value: any;
+  @Input() value: { price: number, obs$: Observable<any> };
   private timeoutId: any;
   constructor(private cd: ChangeDetectorRef) { }
 
   ngOnInit() {
+    this.value.obs$.subscribe((event) => {
+      this.value = { ...this.value, price: 1200 };
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -21,12 +25,18 @@ export class TopComponent implements OnInit, OnChanges {
     }
 
     this.timeoutId = setTimeout(() => {
-      this.value.price = 1000;
+
+      // this.value.price = 1000;
+      // this.value = { ...this.value, price: 1000 };
       this.timeoutId = null;
 
-      // inner components will not update because on push branch;
-      this.cd.detectChanges();
+      // inner components will not update because on push branch do not track timeouts/input changes from here;
+      // this.cd.detectChanges();
     }, 1000);
+  }
+
+  onClick(event: Event): void {
+    console.log('top OnPush clicked');
   }
 
 }

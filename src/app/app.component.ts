@@ -8,11 +8,11 @@ import { interval } from 'rxjs';
 })
 export class AppComponent implements OnInit {
   title = 'on-push-example';
-  value = { price: 0 };
+  value = { price: 0, obs$: interval(1200) };
 
   ngOnInit(): void {
     interval(3000).subscribe(() => {
-      this.value = { price: Math.floor(Math.random() * (4 - 0) ) + 0 };
+      this.value = { ...this.value, price: Math.floor(Math.random() * (9 - 0) ) + 0 };
     });
   }
 }
